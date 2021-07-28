@@ -1,6 +1,6 @@
 class PrototypesController < ApplicationController
-  before_action :authenticate_user!, except:[:new,:edit,:delete,:update]
-  
+   before_action :authenticate_user!,except: [:index, :show]
+   
   def index
     @prototypes = Prototype.includes(:user) #全てのプロトタイプテーブル取得
   end
@@ -18,7 +18,7 @@ class PrototypesController < ApplicationController
   def edit
     @prototype = Prototype.find(params[:id])
     unless @prototype.user_id == current_user.id
-      redirect_to root_path
+      redirect_to root_path(@prototype)
     end
   end
 
@@ -42,7 +42,6 @@ class PrototypesController < ApplicationController
    if @prototype.save #生成した@prototypeを保存
     redirect_to root_path(@prototype) #保存した場合、root_pathへ
    else
-    @prototype = @prototype.includes(:user)
     render :new #保存できない場合newの表示
    end
   end
